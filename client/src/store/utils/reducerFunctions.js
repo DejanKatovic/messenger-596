@@ -11,20 +11,19 @@ export const addMessageToStore = (state, payload) => {
     return [newConvo, ...state];
   }
 
-  let changedIndex = 0;
-  let newState = state.map((convo, index) => {
+  let changedConvo = {};
+  const newState = state.map(convo => {
     if (convo.id === message.conversationId) {
       convo.messages.push(message);
       convo.latestMessageText = message.text;
-      changedIndex = index;
+      changedConvo = convo;
       return convo;
     } else {
       return convo;
     }
   });
-  const changed = newState.splice(changedIndex, 1);
-  newState.splice(0, 0, changed[0]);
-  return newState;
+
+  return [changedConvo, ...newState.filter(convo => convo.id !== message.conversationId)];
 };
 
 export const addOnlineUserToStore = (state, id) => {
@@ -72,14 +71,18 @@ export const addSearchedUsersToStore = (state, users) => {
 };
 
 export const addNewConvoToStore = (state, recipientId, message) => {
-  return state.map((convo) => {
+  let changedConvo = {};
+  const newState = state.map((convo) => {
     if (convo.otherUser.id === recipientId) {
       convo.id = message.conversationId;
       convo.messages.push(message);
       convo.latestMessageText = message.text;
+      changedConvo = convo;
       return convo;
     } else {
       return convo;
     }
   });
+
+  return [changedConvo, ...newState.filter(convo => convo.otherUser.id !== recipientId)];
 };
