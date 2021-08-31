@@ -55,7 +55,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("logout", (id) => {
-    if ([...onlineUsers.keys()].includes(id)) {
+    if (onlineUsers.find(user => user.id === id)) {
       userIndex = onlineUsers.findIndex(user => user.id === id);
       onlineUsers.splice(userIndex, 1);
       socket.broadcast.emit("remove-offline-user", id);
