@@ -7,17 +7,20 @@ import { connect } from "react-redux";
 const useStyles = makeStyles(() => ({
   root: {
     display: "flex",
-    flexGrow: 8,
-    flexDirection: "column"
+    width: 'calc(100% - 400px)',
+    flexGrow: 1,
+    flexDirection: "column",
+    flex: '1 auto 1',
+    height: '100%'
   },
   chatContainer: {
-    marginLeft: 41,
-    marginRight: 41,
+    paddingLeft: 41,
+    paddingRight: 41,
     display: "flex",
     flexDirection: "column",
     flexGrow: 1,
-    justifyContent: "space-between"
-  }
+    overflowY: 'auto',
+  },
 }));
 
 const ActiveChat = (props) => {
@@ -42,12 +45,12 @@ const ActiveChat = (props) => {
               otherUser={conversation.otherUser}
               userId={user.id}
             />
-            <Input
-              otherUser={conversation.otherUser}
-              conversationId={conversation.id}
-              user={user}
-            />
           </Box>
+          <Input
+            otherUser={conversation.otherUser}
+            conversationId={conversation.id}
+            user={user}
+          />
         </>
       )}
     </Box>

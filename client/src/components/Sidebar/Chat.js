@@ -16,18 +16,21 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       cursor: "grab"
     }
+  },
+  selected: {
+    background: 'white'
   }
 }));
 
 const Chat = (props) => {
   const classes = useStyles();
-  const { latestMessageText, otherUser } = props;
+  const { latestMessageText, otherUser, activeConversation } = props;
   const handleClick = async (otherUser) => {
     await props.setActiveChat(otherUser.username);
   };
 
   return (
-    <Box onClick={() => handleClick(otherUser)} className={classes.root}>
+    <Box onClick={() => handleClick(otherUser)} className={`${classes.root} ${classes[otherUser.username === activeConversation && "selected"]}`}>
       <BadgeAvatar
         photoUrl={otherUser.photoUrl}
         username={otherUser.username}
@@ -39,6 +42,12 @@ const Chat = (props) => {
   );
 };
 
+const mapStateToProps = (state) => {
+  return {
+    activeConversation: state.activeConversation
+  };
+};
+
 const mapDispatchToProps = (dispatch) => {
   return {
     setActiveChat: (id) => {
@@ -47,4 +56,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(Chat);
+export default connect(mapStateToProps, mapDispatchToProps)(Chat);

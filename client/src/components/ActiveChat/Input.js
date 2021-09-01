@@ -13,7 +13,9 @@ const useStyles = makeStyles(() => ({
     height: 70,
     backgroundColor: "#F4F6FA",
     borderRadius: 8,
-    marginBottom: 20
+    marginBottom: 20,
+    marginLeft: 41,
+    marginRight: 41,
   }
 }));
 

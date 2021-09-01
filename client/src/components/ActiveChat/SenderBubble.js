@@ -19,11 +19,13 @@ const useStyles = makeStyles(() => ({
     color: "#91A3C0",
     letterSpacing: -0.2,
     padding: 8,
-    fontWeight: "bold"
+    fontWeight: "bold",
+    wordBreak: "break-all"
   },
   bubble: {
     background: "#F4F6FA",
-    borderRadius: "10px 10px 0 10px"
+    borderRadius: "10px 10px 0 10px",
+    maxWidth: "70%"
   }
 }));
 
