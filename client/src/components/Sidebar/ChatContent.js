@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
   username: {
     fontWeight: "bold",
     letterSpacing: -0.2,
-    width: "220px",
+    width: "230px",
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis"

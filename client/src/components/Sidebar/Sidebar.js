@@ -47,7 +47,7 @@ const Sidebar = (props) => {
         {conversations
           .filter((conversation) => conversation.otherUser.username.includes(searchTerm))
           .map((conversation) => {
-            return <Chat latestMessageText={conversation.latestMessageText} otherUser={conversation.otherUser} key={conversation.otherUser.username} />;
+            return <Chat conversationId={conversation.id} latestMessageText={conversation.latestMessageText} otherUser={conversation.otherUser} online={conversation.otherUser.online} unreadCount={conversation.unreadCount} key={conversation.otherUser.username} />;
           })}
       </Box>
     </Box>

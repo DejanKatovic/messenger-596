@@ -54,6 +54,13 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("read-message", (data) => {
+    const receiver = onlineUsers.find(user => user.id === data.recipientId);
+    if (receiver) {
+      socket.broadcast.to(receiver.socket).emit("read-message", data);
+    }
+  })
+
   socket.on("logout", (id) => {
     if (onlineUsers.find(user => user.id === id)) {
       userIndex = onlineUsers.findIndex(user => user.id === id);

@@ -1,9 +1,10 @@
 import React from "react";
-import { Box } from "@material-ui/core";
+import { Box, Badge, withStyles } from "@material-ui/core";
 import { BadgeAvatar, ChatContent } from "../Sidebar";
 import { makeStyles } from "@material-ui/core/styles";
 import { setActiveChat } from "../../store/activeConversation";
 import { connect } from "react-redux";
+import { conversationRead } from "../../store/utils/thunkCreators";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,22 +23,40 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const CustomBadge = withStyles(() => ({
+  badge: {
+    right: -10,
+    top: 20,
+    padding: '0 4px'
+  }
+}))(Badge);
+
 const Chat = (props) => {
   const classes = useStyles();
-  const { latestMessageText, otherUser, activeConversation } = props;
+  const { conversationId, latestMessageText, otherUser, online, activeConversation, unreadCount } = props;
   const handleClick = async (otherUser) => {
     await props.setActiveChat(otherUser.username);
+
+    if (unreadCount > 0) {
+      const reqBody = {
+        recipientId: otherUser.id,
+        conversationId,
+      };
+      await props.conversationRead(reqBody);
+    }
   };
 
   return (
     <Box onClick={() => handleClick(otherUser)} className={`${classes.root} ${classes[otherUser.username === activeConversation && "selected"]}`}>
-      <BadgeAvatar
-        photoUrl={otherUser.photoUrl}
-        username={otherUser.username}
-        online={otherUser.online}
-        sidebar={true}
-      />
-      <ChatContent latestMessageText={latestMessageText} otherUser={otherUser} />
+      <CustomBadge badgeContent={unreadCount} color={"primary"}>
+        <BadgeAvatar
+          photoUrl={otherUser.photoUrl}
+          username={otherUser.username}
+          online={online}
+          sidebar={true}
+        />
+        <ChatContent latestMessageText={latestMessageText} otherUser={otherUser} />
+      </CustomBadge>
     </Box>
   );
 };
@@ -52,6 +71,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setActiveChat: (id) => {
       dispatch(setActiveChat(id));
+    },
+    conversationRead: (data) => {
+      dispatch(conversationRead(data));
     }
   };
 };
