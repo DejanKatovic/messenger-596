@@ -34,16 +34,21 @@ export const markMessageRead = (state, payload) => {
 
   return state.map(convo => {
     if (convo.id === conversationId) {
-      convo.messages.map((msg) => {
+      let newMessages = convo.messages.map((msg) => {
         if (msg.senderId === recipientId) {
-          msg.readed = true;
+          msg.read = true;
           return msg;
         }
         else
           return msg;
       });
+      convo.messages = newMessages;
       if (isSent)
         convo.unreadCount = 0;
+      else {
+        const readMessages = newMessages.filter((message) => message.senderId === recipientId && message.read === true);
+        convo.readId = readMessages.length > 0 ? readMessages[readMessages.length - 1].id : -1;
+      }
       return convo;
     } else {
       return convo;

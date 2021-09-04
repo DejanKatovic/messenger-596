@@ -26,12 +26,15 @@ const useStyles = makeStyles((theme) => ({
     overflow: "hidden",
     textOverflow: "ellipsis"
   },
+  bold: {
+    fontWeight: 700
+  }
 }));
 
 const ChatContent = (props) => {
   const classes = useStyles();
 
-  const { latestMessageText, otherUser } = props;
+  const { latestMessageText, otherUser, unreadCount } = props;
 
   return (
     <Box className={classes.root}>
@@ -39,7 +42,7 @@ const ChatContent = (props) => {
         <Typography className={classes.username}>
           {otherUser.username}
         </Typography>
-        <Typography className={classes.previewText}>
+        <Typography className={`${classes.previewText} ${classes[unreadCount > 0 && 'bold']}`}>
           {latestMessageText}
         </Typography>
       </Box>

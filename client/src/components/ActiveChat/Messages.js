@@ -4,21 +4,19 @@ import { SenderBubble, OtherUserBubble, MarkAvatar } from "../ActiveChat";
 import moment from "moment";
 
 const Messages = (props) => {
-  const { messages, otherUser, userId } = props;
-  let mark = false;
+  const { messages, otherUser, userId, readId } = props;
 
   return (
     <Box>
       {messages.map((message) => {
         const time = moment(message.createdAt).format("h:mm");
 
-        if (message.senderId === userId){
-          if (!mark && !message.readed) {
-            mark = true;
+        if (message.senderId === userId) {
+          if (message.id === readId) {
             return (
               <Box key={message.id}>
-                <MarkAvatar otherUser={otherUser} />
                 <SenderBubble text={message.text} time={time} />
+                <MarkAvatar otherUser={otherUser} />
               </Box>
             )
           }
@@ -28,9 +26,6 @@ const Messages = (props) => {
         else
           return <OtherUserBubble key={message.id} text={message.text} time={time} otherUser={otherUser} />
       })}
-      {
-        !mark ? <MarkAvatar otherUser={otherUser} /> : ''
-      }
     </Box>
   );
 };

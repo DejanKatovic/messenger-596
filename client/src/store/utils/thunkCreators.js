@@ -114,7 +114,7 @@ export const postMessage = (body) => async (dispatch) => {
 };
 
 const saveRead = async (body) => {
-  const {data} = await axios.post("/api/read", body);
+  const {data} = await axios.put("/api/messages/read", body);
   return data;
 }
 

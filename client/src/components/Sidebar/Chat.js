@@ -33,7 +33,7 @@ const CustomBadge = withStyles(() => ({
 
 const Chat = (props) => {
   const classes = useStyles();
-  const { conversationId, latestMessageText, otherUser, online, activeConversation, unreadCount } = props;
+  const { conversationId, latestMessageText, otherUser, online, activeConversation, unreadCount, user } = props;
   const handleClick = async (otherUser) => {
     await props.setActiveChat(otherUser.username);
 
@@ -41,6 +41,7 @@ const Chat = (props) => {
       const reqBody = {
         recipientId: otherUser.id,
         conversationId,
+        userId: user.id
       };
       await props.conversationRead(reqBody);
     }
@@ -55,7 +56,7 @@ const Chat = (props) => {
           online={online}
           sidebar={true}
         />
-        <ChatContent latestMessageText={latestMessageText} otherUser={otherUser} />
+        <ChatContent latestMessageText={latestMessageText} otherUser={otherUser} unreadCount={unreadCount} />
       </CustomBadge>
     </Box>
   );
@@ -63,6 +64,7 @@ const Chat = (props) => {
 
 const mapStateToProps = (state) => {
   return {
+    user: state.user,
     activeConversation: state.activeConversation
   };
 };
