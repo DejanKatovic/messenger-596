@@ -40,8 +40,7 @@ const Chat = (props) => {
     if (unreadCount > 0) {
       const reqBody = {
         recipientId: otherUser.id,
-        conversationId,
-        userId: user.id
+        conversationId
       };
       await props.conversationRead(reqBody);
     }
@@ -64,7 +63,6 @@ const Chat = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    user: state.user,
     activeConversation: state.activeConversation
   };
 };

@@ -46,12 +46,13 @@ router.post("/", async (req, res, next) => {
 
 router.put('/read', async(req, res, next) => {
 	try {
-		if (!req.user) {
-		  return res.sendStatus(401);
-		}
-    const { recipientId, conversationId, userId } = req.body;
-    
-    if (req.user.id !== userId)
+		if (!req.user)
+      return res.sendStatus(401);
+      
+    const { recipientId, conversationId } = req.body;
+
+    const convo = await Conversation.findOne({where: {id: conversationId}});
+    if (convo.user1Id !== req.user.id && convo.user2Id !== req.user.id)
       return res.sendStatus(401);
 
 		await Message.update(
