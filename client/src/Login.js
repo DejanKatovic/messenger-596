@@ -2,25 +2,78 @@ import React from "react";
 import { Redirect, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import {
+  makeStyles,
   Grid,
   Box,
+  Hidden,
   Typography,
   Button,
   FormControl,
   TextField,
+  InputAdornment,
+  Link,
 } from "@material-ui/core";
 import { login } from "./store/utils/thunkCreators";
+import BackgroundPanel from "./components/AuthPage/Background";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    height: '100vh',
+  },
+  main: {
+    position: 'relative',
+    height: '100%',
+  },
+  float: {
+    position: 'absolute',
+    right: theme.spacing(5),
+    top: theme.spacing(4),
+    display: 'flex',
+    alignItems: 'center',
+  },
+  link: {
+    paddingLeft: theme.spacing(4),
+    paddingRight: theme.spacing(4),
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
+    background: 'white',
+    marginLeft: theme.spacing(4),
+    color: theme.palette.primary.main,
+  },
+  form: {
+    paddingLeft: theme.spacing(10),
+    paddingRight: theme.spacing(10),
+  },
+  title: {
+    fontSize: 26,
+    marginBottom: theme.spacing(2),
+    fontWeight: 600,
+  },
+  forgot: {
+    fontSize: 12,
+    fontWeight: 600,
+  },
+  submit: {
+    marginTop: theme.spacing(6),
+    paddingLeft: theme.spacing(7),
+    paddingRight: theme.spacing(7),
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
+    fontFamily: "Montserrat",
+  },
+}));
 
 const Login = (props) => {
+  const classes = useStyles();
   const history = useHistory();
   const { user, login } = props;
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    const username = event.target.username.value;
+    const email = event.target.email.value;
     const password = event.target.password.value;
 
-    await login({ username, password });
+    await login({ email, password });
   };
 
   if (user.id) {
@@ -28,40 +81,51 @@ const Login = (props) => {
   }
 
   return (
-    <Grid container justifyContent="center">
-      <Box>
-        <Grid container item>
-          <Typography>Need to register?</Typography>
-          <Button onClick={() => history.push("/register")}>Register</Button>
+    <Grid container className={classes.root}>
+      <Hidden only={['xs', 'sm']}>
+        <Grid item md={5}>
+          <BackgroundPanel />
         </Grid>
-        <form onSubmit={handleLogin}>
-          <Grid>
-            <Grid>
-              <FormControl margin="normal" required>
-                <TextField
-                  aria-label="username"
-                  label="Username"
-                  name="username"
-                  type="text"
-                />
-              </FormControl>
-            </Grid>
-            <FormControl margin="normal" required>
+      </Hidden>
+      <Grid container item sm={12} md={7} className={classes.main} justifyContent="center" alignItems="center">
+        <Box className={classes.float}>
+          <Typography color="secondary">Don't have an account?</Typography>
+          <Button onClick={() => history.push("/register")} variant="contained" size="large" className={classes.link}>Create account</Button>
+        </Box>
+        <Grid item xs={12} className={classes.form}>
+          <form onSubmit={handleLogin}>
+            <Typography component="h2" className={classes.title}>Welcome back!</Typography>
+            <FormControl margin="normal" required fullWidth>
               <TextField
-                label="password"
+                size="medium"
+                aria-label="e-mail address"
+                label="E-mail address"
+                name="email"
+                type="email"
+              />
+            </FormControl>
+            <FormControl margin="normal" required fullWidth>
+              <TextField
+                size="medium"
+                label="Password"
                 aria-label="password"
                 type="password"
                 name="password"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end"><Link href="#" onClick={() => {}} className={classes.forgot} color="primary">Forgot?</Link></InputAdornment>
+                  )
+                }}
               />
             </FormControl>
-            <Grid>
-              <Button type="submit" variant="contained" size="large">
+            <Grid container justifyContent="center">
+              <Button type="submit" variant="contained" size="large" className={classes.submit} color="primary">
                 Login
               </Button>
             </Grid>
-          </Grid>
-        </form>
-      </Box>
+          </form>
+        </Grid>
+      </Grid>
     </Grid>
   );
 };

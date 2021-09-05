@@ -1,9 +1,10 @@
 import React from "react";
-import { Box } from "@material-ui/core";
+import { Box, Badge, withStyles } from "@material-ui/core";
 import { BadgeAvatar, ChatContent } from "../Sidebar";
 import { makeStyles } from "@material-ui/core/styles";
 import { setActiveChat } from "../../store/activeConversation";
 import { connect } from "react-redux";
+import { conversationRead } from "../../store/utils/thunkCreators";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -16,35 +17,65 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       cursor: "grab"
     }
+  },
+  selected: {
+    background: 'white'
   }
 }));
 
+const CustomBadge = withStyles(() => ({
+  badge: {
+    right: -10,
+    top: 20,
+    padding: '0 4px'
+  }
+}))(Badge);
+
 const Chat = (props) => {
   const classes = useStyles();
-  const { latestMessageText, otherUser } = props;
+  const { conversationId, latestMessageText, otherUser, online, activeConversation, unreadCount, user } = props;
   const handleClick = async (otherUser) => {
     await props.setActiveChat(otherUser.username);
+
+    if (unreadCount > 0) {
+      const reqBody = {
+        recipientId: otherUser.id,
+        conversationId
+      };
+      await props.conversationRead(reqBody);
+    }
   };
 
   return (
-    <Box onClick={() => handleClick(otherUser)} className={classes.root}>
-      <BadgeAvatar
-        photoUrl={otherUser.photoUrl}
-        username={otherUser.username}
-        online={otherUser.online}
-        sidebar={true}
-      />
-      <ChatContent latestMessageText={latestMessageText} otherUser={otherUser} />
+    <Box onClick={() => handleClick(otherUser)} className={`${classes.root} ${classes[otherUser.username === activeConversation && "selected"]}`}>
+      <CustomBadge badgeContent={unreadCount} color={"primary"}>
+        <BadgeAvatar
+          photoUrl={otherUser.photoUrl}
+          username={otherUser.username}
+          online={online}
+          sidebar={true}
+        />
+        <ChatContent latestMessageText={latestMessageText} otherUser={otherUser} unreadCount={unreadCount} />
+      </CustomBadge>
     </Box>
   );
+};
+
+const mapStateToProps = (state) => {
+  return {
+    activeConversation: state.activeConversation
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     setActiveChat: (id) => {
       dispatch(setActiveChat(id));
+    },
+    conversationRead: (data) => {
+      dispatch(conversationRead(data));
     }
   };
 };
 
-export default connect(null, mapDispatchToProps)(Chat);
+export default connect(mapStateToProps, mapDispatchToProps)(Chat);

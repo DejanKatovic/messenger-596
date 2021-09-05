@@ -8,7 +8,11 @@ const useStyles = makeStyles(() => ({
   root: {
     paddingLeft: 21,
     paddingRight: 21,
-    flexGrow: 1
+    width: '400px',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    flex: '1 auto',
   },
   title: {
     fontSize: 20,
@@ -16,6 +20,14 @@ const useStyles = makeStyles(() => ({
     fontWeight: "bold",
     marginTop: 32,
     marginBottom: 15
+  },
+  main: {
+    height: '100%',
+    overflowY: 'scroll',
+
+    '&::-webkit-scrollbar': {
+        display: 'none',
+    },
   }
 }));
 
@@ -26,14 +38,18 @@ const Sidebar = (props) => {
 
   return (
     <Box className={classes.root}>
-      <CurrentUser />
-      <Typography className={classes.title}>Chats</Typography>
-      <Search handleChange={handleChange} />
-      {conversations
-        .filter((conversation) => conversation.otherUser.username.includes(searchTerm))
-        .map((conversation) => {
-          return <Chat latestMessageText={conversation.latestMessageText} otherUser={conversation.otherUser} key={conversation.otherUser.username} />;
-        })}
+      <Box>
+        <CurrentUser />
+        <Typography className={classes.title}>Chats</Typography>
+        <Search handleChange={handleChange} />
+      </Box>
+      <Box className={classes.main}>
+        {conversations
+          .filter((conversation) => conversation.otherUser.username.includes(searchTerm))
+          .map((conversation) => {
+            return <Chat conversationId={conversation.id} latestMessageText={conversation.latestMessageText} otherUser={conversation.otherUser} online={conversation.otherUser.online} unreadCount={conversation.unreadCount} key={conversation.otherUser.username} />;
+          })}
+      </Box>
     </Box>
   );
 };
